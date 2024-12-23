@@ -1,0 +1,186 @@
+.account-main {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background-color: var(--main-background);
+    /* because of that circles that gives overflow in resposive mode we add overflow: clip */
+    overflow: clip;
+}
+
+
+.form-wrapper {
+    position: relative;
+    isolation: isolate;
+
+    &::before {
+        content: '';
+        position: absolute;
+        top: -50px;
+        left: -50px;
+        width: 300px;
+        height: 300px;
+        background: radial-gradient(circle, var(--circle-one), transparent);
+        filter: blur(15px);
+        border-radius: 50%;
+        opacity: 0.8;
+        animation: pulse 3s infinite;
+        animation-delay: 0.2s;
+        /* z-index: -1; */
+    }
+
+    &::after {
+        position: absolute;
+        content: '';
+        bottom: -60px;
+        right: -60px;
+        width: 250px;
+        height: 250px;
+        background: red;
+        background: radial-gradient(circle, var(--circle-two), transparent);
+        filter: blur(20px);
+        border-radius: 50%;
+        opacity: 0.8;
+        z-index: -1;
+        animation: pulse 3s infinite;
+    }
+}
+
+@keyframes pulse {
+
+    0%,
+    100% {
+        transform: scale(1);
+        opacity: 0.7;
+    }
+
+    50% {
+        transform: scale(1.2);
+        opacity: 1;
+    }
+}
+
+.blur-effect {
+    --_form-w-size: 300px;
+    width: var(--_form-w-size);
+    border: 1px solid var(--border-color);
+    border-radius: 8px;
+    padding: 1rem;
+    box-shadow: 0 3px 4px 0px var(--depth-shadow);
+    backdrop-filter: blur(5px);
+    background-color: var(--blur-color);
+}
+
+.form-title {
+    color: var(--primary-text);
+    font-family: cursive;
+}
+
+.form-para {
+    color: var(--primary-text);
+    font-size: 0.9rem;
+    &::first-letter{
+        text-transform: uppercase;
+    }
+}
+
+.account-form {
+    display: grid;
+    gap: 1rem;
+}
+
+.account-form__group {
+    display: grid;
+    gap: 0.5rem;
+}
+
+.account-form__label {
+    color: var(--primary-text);
+    text-transform: capitalize;
+    font-weight: 500;
+}
+
+.account-form__input {
+    border: 1px solid var(--border-color);
+    background-color: var(--main-background);
+    padding: 0.5rem 1rem;
+    width: 100%;
+    font-size: 1rem;
+    outline: none;
+    color: var(--primary-text);
+
+    &.error {
+        border-color: var(--error);
+    }
+
+    &.error + .form-error--text {
+        display: block;
+    }
+}
+
+.account-form__input--checkbox {
+    --_size: 25px;
+    width: var(--_size);
+    height: var(--_size);
+    appearance: none;
+    border: 2px solid var(--info);
+    cursor: pointer;
+    -webkit-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+
+    &:hover {
+        border-color: var(--checkbox-hover-border-color);
+    }
+
+    &:checked {
+        background-color: var(--checked-bg-color);
+        border-color: var(--checked-border-color);
+    }
+}
+
+.form-error--text {
+    color: var(--error);
+    font-size: 0.8rem;
+    font-weight: 500;
+    text-transform: capitalize;
+    display: none;
+}
+
+.account-form__button {
+    background-color: var(--form-btn-bg-color);
+    padding: 1rem;
+    font-size: 1.12rem;
+    text-transform: uppercase;
+    color: #F2F2F2;
+    letter-spacing: 0.1em;
+    font-weight: 500;
+}
+
+.account-form__button-cancle {
+    width: 100%;
+    text-align: center;
+    padding-block: 0.8rem;
+    border: 1px solid var(--border-color);
+    font-size: 1.2rem;
+    text-transform: capitalize;
+    -webkit-transition: border-color 0.2s ease-in-out;
+    transition: border-color 0.2s ease-in-out;
+
+    &:hover {
+        border-color: var(--secondry-accent);
+    }
+}
+
+.form-account-para {
+    color: var(--primary-text);
+    text-transform: capitalize;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.form-account-link {
+    color: rgb(66, 177, 214);
+    text-decoration: underline;
+    font-size: 1rem;
+    font-weight: 500;
+}

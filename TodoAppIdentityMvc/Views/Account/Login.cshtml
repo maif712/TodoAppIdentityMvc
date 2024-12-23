@@ -1,0 +1,41 @@
+﻿@model LoginDto
+
+@{
+    Layout = "_AccountLayout";
+    ViewData["Title"] = "Login";
+}
+<partial name="_ShowMessage"></partial>
+<div class="form-wrapper">
+    <div class="blur-effect">
+        <div class="m-b-4">
+            <h1 class="form-title">welcom!</h1>
+            <p class="form-para">login to continue</p>
+        </div>
+        <!-- Login form -->
+        <form asp-action="Login" class="account-form" method="post">
+            <div class="account-form__group">
+                <lable class="account-form__label">user name *</lable>
+                <input asp-for="UserName" type="text" class="account-form__input form-input-needs-validation">
+                <span asp-validation-for="UserName" class="form-error--text">please fill the required filed.</span>
+            </div>
+            <div class="account-form__group">
+                <lable class="account-form__label">password *</lable>
+                <input asp-for="Password" type="password" class="account-form__input form-input-needs-validation">
+                <span asp-validation-for="Password" class="form-error--text">please fill the required filed.</span>
+            </div>
+            <div class="flex items-center gap-1">
+                <input asp-for="RememberMe" class="account-form__input--checkbox" type="checkbox" name="RememberMe" id="rememberMe">
+                <label class="account-form__label" for="rememberMe">remember me?</label>
+            </div>
+            <button type="submit" class="account-form__button">login</button>
+        </form>
+        <div class="mt-4">
+            <p class="form-account-para">
+                don't have an account?
+                <a asp-action="register" class="form-account-link">
+                    register here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>

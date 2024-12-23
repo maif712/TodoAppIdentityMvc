@@ -1,0 +1,38 @@
+﻿@model BaseTodoDto
+
+<!-- Modal: create page -->
+<div class="modal-container">
+    <div class="modal">
+        <div>
+            <div class="m-b-4">
+                <h1 class="form-title">Edit a todo!</h1>
+            </div>
+            <!-- Login form -->
+            <form class="account-form" asp-action="Edit" method="post">
+                <div class="account-form__group">
+                    <lable class="account-form__label">title *</lable>
+                    <input asp-for="Title" type="text" class="account-form__input form-input-needs-validation">
+                    <span asp-validation-for="Title" class="form-error--text">please fill the required filed.</span>
+                </div>
+                <div class="account-form__group">
+                    <lable class="account-form__label">priority</lable>
+                    <select asp-for="Priority" type="password" class="account-form__input">
+                        <option value=@StaticePriorities.HIGH>High</option>
+                        <option value=@StaticePriorities.MEDIUM>Medium</option>
+                        <option value=@StaticePriorities.LOW>Low</option>
+                    </select>
+                </div>
+                <div class="account-form__group">
+                    <p class="account-form__label">@(Model.IsCompleted ? "Completed" : "not Completed")</p>
+                    <p class="account-form__label">@(Model.InArchive ? "in Archive" : "not in the archive")</p>
+                </div>
+                <button type="submit" class="account-form__button">Edit</button>
+                <a asp-controller="Home" asp-action="Index" class="account-form__button-cancle">cancle</a>
+            </form>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    <script src="~/js/formValidation.js"></script>
+}

@@ -1,0 +1,193 @@
+﻿@using Microsoft.AspNetCore.Identity
+@inject UserManager<AppUser> _userManager
+@inject IAccountService _IAccountService
+
+@{
+    var response = await _IAccountService.GetUserInfoAsync(User);
+    var userInfo = response.Data;
+}
+
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    @await RenderSectionAsync("Styles", required: false)
+    <link rel="stylesheet" href="~/css/account.css">
+    <link rel="stylesheet" href="~/css/style.css">
+    <title>Welcom: Todo app</title>
+</head>
+
+<body>
+    <header class="header">
+        <div class="p-i-1">
+            <div class="flex items-center justify-between">
+                <a asp-controller="Home" asp-action="Index" class="logo-title">todo app</a>
+
+                <!-- User info after login -->
+                @if (User.Identity.IsAuthenticated)
+                {
+                    <div class="flex items-center gap-3">
+                        <div>
+                            <p class="primary-nav__user-info">
+                                <span>welcom</span>
+                                @userInfo?.Email
+                            </p>
+                        </div>
+                        <div class="header__user-info">
+                            <p>todos: @(userInfo?.Todos != null ? userInfo?.Todos?.Count() : 0)</p>
+                            <p>completed: @(userInfo?.Todos != null ? userInfo?.Todos?.Where(t => t.IsCompleted == true).ToList().Count() : 0)</p>
+                        </div>
+                    </div>
+                }
+                <nav class="primary-nav">
+                    <ul class="primary-nav__ul">
+                        @if (!User.Identity.IsAuthenticated)
+                        {
+                            <!-- Login icon -->
+                            <li class="primary-nav__li">
+                                <a asp-controller="Account" asp-action="Login" id="login-btn" aria-label="login or register link"
+                                   class="primary-nav__link primary-nav__link--icon" data-icon-title="login">
+                                    <div aria-labelledby="login-btn" class="icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke-width="1.5" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z" />
+                                        </svg>
+                                    </div>
+                                </a>
+                            </li>
+                        }
+                        else
+                        {
+                            <!-- Logout icon, remove the display-none class -->
+                            <li class="primary-nav__li">
+                                <!-- log out form -->
+                                <form method="post" asp-controller="Account" asp-action="Logout">
+                                    <button id="logout-btn" aria-label="log out"
+                                            class="primary-nav__link primary-nav__link--icon" data-icon-title="log out">
+                                        <div aria-labelledby="login-btn" class="icon">
+                                            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                                 stroke-width="1.5" stroke="currentColor" class="size-6">
+                                                <path stroke-linecap="round" stroke-linejoin="round"
+                                                      d="M8.25 9V5.25A2.25 2.25 0 0 1 10.5 3h6a2.25 2.25 0 0 1 2.25 2.25v13.5A2.25 2.25 0 0 1 16.5 21h-6a2.25 2.25 0 0 1-2.25-2.25V15m-3 0-3-3m0 0 3-3m-3 3H15" />
+                                            </svg>
+                                        </div>
+                                    </button>
+                                </form>
+                            </li>
+                        }
+                    </ul>
+                </nav>
+            </div>
+        </div>
+    </header>
+    <div class="grid-layout">
+        <aside class="feed-left-sidebar">
+            <div class="dashboard-sidebar">
+                <div class="p-2 p-b-10 relative">
+                    @if (User.Identity.IsAuthenticated)
+                    {
+                        <div class="flex flex-col gap-1 m-b-4">
+                            <button onclick="OpenModal()" class="aside-navigation__create-btn">
+                                <div class="clip-path"></div>
+                                new task
+                            </button>
+                            <div class="aside__search-form-wrapper">
+                                <form asp-controller="Todo" asp-action="Search" method="get" class="aside__search-form">
+                                    <input name="searchString" type="search" class="aside__search-input" placeholder="Find your task...">
+                                </form>
+                            </div>
+                        </div>
+                        <ul class="aside-navigation__ul">
+                            <li class="aside-navigation__li"><a asp-controller="Home" asp-action="Index" class="aside-navigation__link">all todos</a></li>
+                            <li class="aside-navigation__li"><a asp-controller="Home" asp-action="Index" asp-route-filterString="@StaticeFilterStrings.TODAY" class="aside-navigation__link">today</a></li>
+                            <li class="aside-navigation__li">
+                                <a asp-controller="Home" asp-action="Index" asp-route-filterString="@StaticeFilterStrings.COMPLETED" class="aside-navigation__link">completed</a>
+                            </li>
+                            <li class="aside-navigation__li has-children">
+                                <button aria-expanded="false" class="aside-navigation__link btn-has-sub-menu">
+                                    priority tasks
+                                    <div class="has-children-icon">
+                                        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                             stroke-width="3" stroke="currentColor" class="size-6">
+                                            <path stroke-linecap="round" stroke-linejoin="round"
+                                                  d="m19.5 8.25-7.5 7.5-7.5-7.5" />
+                                        </svg>
+                                    </div>
+                                </button>
+                                <div class="aside__sub-menu" aria-hidden="true">
+                                    <div class="sub-menu__content">
+                                        <ul class="sub-menu__ul">
+                                            <li>
+                                                <a asp-controller="Home" asp-action="Index" asp-route-filterString="@StaticePriorities.HIGH" class="sub-menu__link">high</a>
+                                            </li>
+                                            <li>
+                                                <a asp-controller="Home" asp-action="Index" asp-route-filterString="@StaticePriorities.MEDIUM" class="sub-menu__link">medium</a>
+                                            </li>
+                                            <li>
+                                                <a asp-controller="Home" asp-action="Index" asp-route-filterString="@StaticePriorities.LOW" class="sub-menu__link">low</a>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            </li>
+                            <li class="aside-navigation__li">
+                                <a asp-controller="Todo" asp-action="Archive" class="aside-navigation__link">archived tasks</a>
+                            </li>
+                            <li class="aside-navigation__li">
+                                <a href="#" class="aside-navigation__link">help/support</a>
+                            </li>
+                        </ul>
+                    }
+                    <div class="aside__container">
+                        <button class="aside__setting-btn" aria-label="setting" aria-expanded="false">
+                            <div class="icon">
+                                <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"
+                                     stroke-width="1.5" stroke="currentColor" class="size-6">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.325.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 0 1 1.37.49l1.296 2.247a1.125 1.125 0 0 1-.26 1.431l-1.003.827c-.293.241-.438.613-.43.992a7.723 7.723 0 0 1 0 .255c-.008.378.137.75.43.991l1.004.827c.424.35.534.955.26 1.43l-1.298 2.247a1.125 1.125 0 0 1-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.47 6.47 0 0 1-.22.128c-.331.183-.581.495-.644.869l-.213 1.281c-.09.543-.56.94-1.11.94h-2.594c-.55 0-1.019-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 0 1-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 0 1-1.369-.49l-1.297-2.247a1.125 1.125 0 0 1 .26-1.431l1.004-.827c.292-.24.437-.613.43-.991a6.932 6.932 0 0 1 0-.255c.007-.38-.138-.751-.43-.992l-1.004-.827a1.125 1.125 0 0 1-.26-1.43l1.297-2.247a1.125 1.125 0 0 1 1.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.086.22-.128.332-.183.582-.495.644-.869l.214-1.28Z" />
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                          d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z" />
+                                </svg>
+                            </div>
+                        </button>
+                        <div class="theme-wrapper">
+                            <button class="theme-btn" data-label="light">light</button>
+                            <button class="theme-btn" data-label="dark">dark</button>
+                        </div>
+                    </div>
+                </div>
+                <footer class="footer">
+                    <p>Made with love by Maif. All right reserved 2024.</p>
+                </footer>
+            </div>
+
+        </aside>
+        <main>
+            <div class="p-3 relative">
+                @RenderBody()
+            </div>
+            <div id="modal-container">
+            </div>
+        </main>
+    </div>
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/js/themeValidation.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/js/app.js"></script>
+    <script>
+        function OpenModal() {
+            $("#modal-container").load("/Todo/Create")
+        }
+
+        function OpenEditModal(id) {
+            $("#modal-container").load("/Todo/Edit/" + id)
+        }
+    </script>
+</body>
+
+</html>

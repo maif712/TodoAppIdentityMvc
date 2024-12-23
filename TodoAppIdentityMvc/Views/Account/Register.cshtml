@@ -1,0 +1,42 @@
+﻿@model RegisterDto
+@{
+    Layout = "_AccountLayout";
+    ViewData["Title"] = "Register";
+}
+<partial name="_ShowMessage"></partial>
+<!-- Main form layout -->
+<div class="form-wrapper">
+    <div class="blur-effect">
+        <div class="m-b-4">
+            <h1 class="form-title">welcom!</h1>
+            <p class="form-para">register to continue</p>
+        </div>
+        <!-- Login form -->
+        <form asp-action="Register" class="account-form" method="post">
+            <div class="account-form__group">
+                <lable class="account-form__label">user name *</lable>
+                <input asp-for="UserName" type="text" class="account-form__input form-input-needs-validation">
+                <span asp-validation-for="UserName" class="form-error--text">please fill the required filed.</span>
+            </div>
+            <div class="account-form__group">
+                <lable class="account-form__label">email *</lable>
+                <input asp-for="Email" type="email" class="account-form__input form-input-needs-validation">
+                <span asp-validation-for="UserName" class="form-error--text">please fill the required filed.</span>
+            </div>
+            <div class="account-form__group">
+                <lable class="account-form__label">password *</lable>
+                <input asp-for="Password" type="password" class="account-form__input form-input-needs-validation">
+                <span asp-validation-for="Password" class="form-error--text">please fill the required filed.</span>
+            </div>
+            <button type="submit" class="account-form__button">register</button>
+        </form>
+        <div class="mt-4">
+            <p class="form-account-para">
+                already have an account?
+                <a asp-action="Login" class="form-account-link">
+                    login here
+                </a>
+            </p>
+        </div>
+    </div>
+</div>

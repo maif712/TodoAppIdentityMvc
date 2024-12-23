@@ -1,0 +1,13 @@
+﻿@if (TempData[StaticAlertMessage.SUCCESS] != null)
+{
+    <div class="message success">
+        <p>@TempData[StaticAlertMessage.SUCCESS]</p>
+    </div>
+}
+
+@if (TempData[StaticAlertMessage.ERROR] != null)
+{
+    <div class="message error">
+        <p>@TempData[StaticAlertMessage.ERROR]</p>
+    </div>
+}
